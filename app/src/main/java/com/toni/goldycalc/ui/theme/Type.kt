@@ -2,10 +2,20 @@ package com.toni.goldycalc.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.toni.goldycalc.R
 
+val poppinsFontFamily = FontFamily (
+    Font(R.font.poppins_bold, FontWeight.Bold),
+    Font(R.font.poppins_semibold, FontWeight.SemiBold),
+
+    )
+val merriweatherFont = FontFamily (
+    Font(R.font.merriweather_variablefont_opsz,FontWeight.Bold)
+)
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(
@@ -14,7 +24,19 @@ val Typography = Typography(
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
+    ),
+    headlineLarge = TextStyle (
+        fontFamily = poppinsFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 35.sp
+    ),
+    headlineSmall = TextStyle (
+        fontFamily = merriweatherFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp
     )
+
+)
     /* Other default text styles to override
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
@@ -31,4 +53,4 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     )
     */
-)
+
