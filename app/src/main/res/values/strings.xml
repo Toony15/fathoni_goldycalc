@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">GoldyCalc</string>
     <string name="Hitung_Emas">" "</string>
-    <string name="penjelasan">"GoldyCalc Hellp you to prepare  you're investment gold "</string>
+    <string name="penjelasan">" Helps You prepare your Gold Investment "</string>
     <string name="Kembali">" Kembali"</string>
 </resources>
