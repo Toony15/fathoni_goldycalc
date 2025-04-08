@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.toni.goldycalc.navigation.SetupNavbarGraph
 import com.toni.goldycalc.ui.screen.MainScreen
 import com.toni.goldycalc.ui.theme.GoldyCalcTheme
 
@@ -31,12 +32,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GoldyCalcTheme {
-                MainScreen()
+             SetupNavbarGraph()
             }
         }
     }
 }
-
 
 
 

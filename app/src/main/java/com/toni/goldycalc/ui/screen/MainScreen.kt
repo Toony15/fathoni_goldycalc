@@ -1,5 +1,4 @@
 package com.toni.goldycalc.ui.screen
-
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -9,8 +8,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -32,34 +36,51 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.toni.goldycalc.R
+import com.toni.goldycalc.navigation.Screen
 import com.toni.goldycalc.ui.theme.GoldyCalcTheme
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen () {
-    Scaffold (
+fun MainScreen(navController: NavHostController) {
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "GoldyCalc",
+                    Text(
+                        text = "GoldyCalc",
                         style = MaterialTheme.typography.headlineSmall
                     )
                 },
+
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor =  Color(0xFFDAA520),
-                    titleContentColor = androidx.compose.ui.graphics.Color.White,
+                    containerColor = Color(0xFFDAA520),
+                    titleContentColor = Color.White,
                 ),
-
-                )
-        },
-
-
-        ) { innerPadding ->
+                actions = {
+                    IconButton(onClick = {navController.navigate(Screen.About.route)}) {
+                        Icon(
+                            imageVector = Icons.Outlined.KeyboardArrowRight,
+                            contentDescription = stringResource(R.string.penjelasan),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
         ScreenContent(Modifier.padding(innerPadding))
-
     }
 }
+
+
+
 
 fun hitungHargaEmas(gram: Double): Double {
     val hargaPerGram = 1_200_000.0 // Bisa kamu update dari API nanti
@@ -159,8 +180,8 @@ fun ScreenContent(modifier: Modifier = Modifier) {
 }
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun MainAppPreview() {
     GoldyCalcTheme {
-        MainScreen()
+        MainScreen(rememberNavController())
     }
 }
