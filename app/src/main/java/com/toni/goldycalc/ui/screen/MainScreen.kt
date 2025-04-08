@@ -1,16 +1,21 @@
 package com.toni.goldycalc.ui.screen
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -24,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.toni.goldycalc.R
@@ -41,7 +47,7 @@ fun MainScreen () {
                     )
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor =  Color(0xFFFFD700),
+                    containerColor =  Color(0xFFDAA520),
                     titleContentColor = androidx.compose.ui.graphics.Color.White,
                 ),
 
@@ -54,48 +60,102 @@ fun MainScreen () {
 
     }
 }
+
+fun hitungHargaEmas(gram: Double): Double {
+    val hargaPerGram = 1_200_000.0 // Bisa kamu update dari API nanti
+    return gram * hargaPerGram
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScreenContent ( modifier: Modifier = Modifier) {
+fun ScreenContent(modifier: Modifier = Modifier) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
     var Hitung by remember { mutableStateOf("") }
-    Column (
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+    var hasilHitung by remember { mutableStateOf<Double?>(null) }
+    var error by remember { mutableStateOf<String?>(null) }
 
-
-
-    ){
+    Column(
+        modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 90.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
         Text(
             text = "Golden Calculator",
-            modifier = modifier,
-
+            modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 25.dp),
             style = MaterialTheme.typography.headlineLarge,
-            color = Color(0xFFFFFF00)
+            color = Color(0xFFFFFF00),
+            textAlign = TextAlign.Center,
+            maxLines = 1
         )
-    }
-    Column (
-        modifier = Modifier.fillMaxSize().padding(75.dp),
-        verticalArrangement = Arrangement.spacedBy(75.dp),
-    ) {
-       Text(
-           text = stringResource(id = R.string.Hitung_Emas),
-           style = MaterialTheme.typography.bodyLarge,
-           modifier = Modifier.fillMaxWidth()
-       )
+
+        Text(
+            text = stringResource(id = R.string.Hitung_Emas),
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.fillMaxWidth()
+        )
+
         OutlinedTextField(
             value = Hitung,
-            onValueChange = { Hitung = it},
+            onValueChange = {
+                Hitung = it
+                error = null
+                hasilHitung = null
+            },
             label = { Text(text = stringResource(R.string.Hitung_Emas)) },
             trailingIcon = { Text(text = "Gram") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Done
             ),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 5.dp),
+            interactionSource = interactionSource,
+            shape = RoundedCornerShape(15.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                containerColor = Color.Transparent,
+                focusedBorderColor = if (isFocused && Hitung.isNotEmpty()) Color(0xFFFFFF00) else Color(0xFFFFD700),
+                unfocusedBorderColor = Color.Gray
+            )
         )
-    }
+        hasilHitung?.let {
+            Text(
+                text = "Harga Emas: Rp${"%,.0f".format(it)}",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.Black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+        }
 
+        // Tombol hitung
+        androidx.compose.material3.Button(
+            onClick = {
+                val gram = Hitung.toDoubleOrNull()
+                if (gram == null || gram < 1) {
+                    error = "Masukkan minimal 1 gram"
+                    hasilHitung = null
+                } else {
+                    hasilHitung = hitungHargaEmas(gram)
+                }
+            },
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFDAA520), // warna coklat keemasan
+                contentColor = Color.White
+            )
+        ) {
+            Text("Hitung")
+        }
+
+        // Tampilkan hasil atau error
+        error?.let {
+            Text(text = it, color = Color.Red)
+        }
+
+
+    }
 }
 @Preview(showBackground = true)
 @Composable

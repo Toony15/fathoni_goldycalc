@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">GoldyCalc</string>
-    <string name="Hitung_Emas">Gram Emas</string>
+    <string name="Hitung_Emas">" "</string>
 </resources>
