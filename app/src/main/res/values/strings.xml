@@ -3,4 +3,8 @@
     <string name="Hitung_Emas">" "</string>
     <string name="penjelasan">" Helps You prepare your Gold Investment "</string>
     <string name="Kembali">" Kembali"</string>
+    <string name="Tambah_Catatan">" Catat Rencana anda"</string>
+    <string name="list_kosong">Belum ada catatan</string>
+    <string name="x_diklik">1$s diklik!</string>
+    <string name="belum_bisa">Belum bisa tambah catatan.</string>
 </resources>

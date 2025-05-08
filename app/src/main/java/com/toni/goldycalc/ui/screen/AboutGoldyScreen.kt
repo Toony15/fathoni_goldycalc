@@ -1,13 +1,7 @@
 package com.toni.goldycalc.ui.screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.content.MediaType.Companion.Image
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,14 +22,15 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.test.isFocused
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -47,10 +42,10 @@ import com.toni.goldycalc.R
 data class GoldItem(val name: String, val imageRes: Int)
 val dummyGoldList = listOf(
     GoldItem("1 gram", R.drawable.gold_1g),
-    GoldItem("1 gram", R.drawable.gold_3g),
+    GoldItem("3 gram", R.drawable.gold_3g),
     GoldItem("5 gram", R.drawable.gold_5g),
     GoldItem("10 gram", R.drawable.gold_10g),
-    GoldItem("1 gram", R.drawable.gold_25g),
+    GoldItem("25 gram", R.drawable.gold_25g),
 
 )
 @OptIn(ExperimentalMaterial3Api::class)
