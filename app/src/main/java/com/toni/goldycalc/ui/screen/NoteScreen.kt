@@ -25,6 +25,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,6 +43,7 @@ import com.toni.goldycalc.R
 import com.toni.goldycalc.model.Catatan
 import com.toni.goldycalc.navigation.Screen
 import com.toni.goldycalc.ui.theme.GoldyCalcTheme
+import com.toni.goldycalc.util.ViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -91,27 +94,30 @@ fun NoteScreen(navController: NavHostController) {
 
 @SuppressLint("StringFormatInvalid")
 @Composable
-fun NoteContent(modifier: Modifier,navController: NavHostController  ) {
-    val viewModel:MainViewModel = viewModel()
-    val  data = viewModel.data
+fun NoteContent(modifier: Modifier, navController: NavHostController) {
+    val context = LocalContext.current
+    val factory = ViewModelFactory(context)
+    val viewModel: MainViewModel = viewModel(factory = factory)
+
+    val data by viewModel.data.collectAsState()
 
     if (data.isEmpty()) {
         Column(
-            modifier = modifier.fillMaxSize().padding(16.dp),
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = stringResource(id = R.string.list_kosong))
         }
 
-    }else {
-        LazyColumn (
+    } else {
+        LazyColumn(
             modifier = modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = 84.dp)
-        ){
+        ) {
             items(data) {
-                val context = LocalContext.current
-
                 ListItem(catatan = it) {
                     navController.navigate(Screen.Formubah.withId(it.id))
                 }
@@ -119,10 +125,8 @@ fun NoteContent(modifier: Modifier,navController: NavHostController  ) {
             }
         }
     }
-
-
-
 }
+
 @Composable
 fun ListItem(catatan: Catatan, onClick: () -> Unit) {
     Column (

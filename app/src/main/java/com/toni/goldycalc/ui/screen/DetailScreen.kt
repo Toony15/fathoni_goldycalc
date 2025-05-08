@@ -1,6 +1,7 @@
 package com.toni.goldycalc.ui.screen
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,7 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,35 +25,43 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.toni.goldycalc.R
+import com.toni.goldycalc.navigation.DetailViewModel
 import com.toni.goldycalc.ui.theme.GoldyCalcTheme
+import com.toni.goldycalc.util.ViewModelFactory
 
 const val KEY_ID_CATATAN = "idCatatan"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(navController: NavHostController, id: Long? = null) {
+    val context =  LocalContext.current
+    val  factory = ViewModelFactory(context)
+    val viewModel:DetailViewModel = viewModel(factory =  factory)
 
-    val ViewModel: MainViewModel = viewModel()
+
     var judul by remember { mutableStateOf("") }
     var catatan by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         if (id == null) return@LaunchedEffect
-        val data = ViewModel.getCatatan(id) ?: return@LaunchedEffect
+        val data = viewModel.getCatatan(id) ?: return@LaunchedEffect
         judul = data.judul
         catatan = data.catatan
     }
@@ -78,12 +90,30 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                     titleContentColor =  MaterialTheme.colorScheme.primary
                 ),
                 actions = {
-                    IconButton(onClick = {navController.popBackStack()}) {
+                    IconButton(onClick = {
+                        if (judul == "" || catatan == "") {
+                            Toast.makeText(context,R.string.invalid, Toast.LENGTH_LONG).show()
+                            return@IconButton
+                        }
+                        if (id == null) {
+                            viewModel.insert(judul, catatan)
+                        }
+                        else {
+                            viewModel.update(id,judul,catatan)
+                        }
+
+                        navController.popBackStack()}) {
                         Icon(
                             imageVector = Icons.Outlined.Check,
                             contentDescription = stringResource(R.string.simpan),
                             tint = MaterialTheme.colorScheme.primary
                         )
+                    }
+                    if (id != null) {
+                        DeleteAction {
+                            viewModel.delete(id)
+                            navController.popBackStack()
+                        }
                     }
 
                 }
@@ -135,6 +165,31 @@ fun Formcatatan(
             ),
             modifier = Modifier.fillMaxWidth()
         )
+    }
+}
+@Composable
+fun DeleteAction(delete: () -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    IconButton(onClick = { expanded =  true }) {
+        Icon(
+            imageVector = Icons.Filled.MoreVert,
+            contentDescription = stringResource(R.string.lainya),
+            tint = MaterialTheme.colorScheme.primary
+        )
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = {expanded = false}
+        ) {
+            DropdownMenuItem(
+                text = {
+                    Text(text = stringResource(id = R.string.hapus))
+                },
+                onClick = {
+                    expanded = false
+                    delete()
+                }
+            )
+        }
     }
 }
 @Preview(showBackground = true)
