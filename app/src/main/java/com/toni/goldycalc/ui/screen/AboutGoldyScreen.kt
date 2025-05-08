@@ -75,7 +75,7 @@ fun AboutGoldyScreen(navController: NavHostController) {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.Kembali),
+                            contentDescription = stringResource(R.string.kembali),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }

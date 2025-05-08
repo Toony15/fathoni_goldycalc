@@ -46,4 +46,7 @@ import com.toni.goldycalc.model.Catatan
 
 
             )
+        fun getCatatan(id: Long): Catatan? {
+            return data.find { it.id == id }
+        }
     }

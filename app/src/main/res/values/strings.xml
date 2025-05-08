@@ -2,9 +2,12 @@
     <string name="app_name">GoldyCalc</string>
     <string name="Hitung_Emas">" "</string>
     <string name="penjelasan">" Helps You prepare your Gold Investment "</string>
-    <string name="Kembali">" Kembali"</string>
-    <string name="Tambah_Catatan">" Catat Rencana anda"</string>
     <string name="list_kosong">Belum ada catatan</string>
     <string name="x_diklik">1$s diklik!</string>
-    <string name="belum_bisa">Belum bisa tambah catatan.</string>
+    <string name="judul">judul</string>
+    <string name="isi_catatan">Isi catatan</string>
+    <string name="tambah_catatan">Tambah Catatan</string>
+    <string name="kembali">Kembali</string>
+    <string name="simpan">Simpan</string>
+    <string name="edit_catatan">ubah catatan</string>
 </resources>

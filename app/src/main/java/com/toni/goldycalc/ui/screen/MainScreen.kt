@@ -79,7 +79,7 @@ fun MainScreen(navController: NavHostController) {
                     IconButton(onClick = { navController.navigate(Screen.Note.route) }) {
                         Icon(
                             imageVector = Icons.Outlined.AddCircle,
-                            contentDescription = stringResource(R.string.Tambah_Catatan),
+                            contentDescription = stringResource(R.string.tambah_catatan),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }

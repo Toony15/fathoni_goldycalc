@@ -39,12 +39,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.toni.goldycalc.R
 import com.toni.goldycalc.model.Catatan
+import com.toni.goldycalc.navigation.Screen
 import com.toni.goldycalc.ui.theme.GoldyCalcTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteScreen(navController: NavHostController) {
-    val context = LocalContext.current
+
 
     Scaffold(
         topBar = {
@@ -63,7 +64,7 @@ fun NoteScreen(navController: NavHostController) {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.Kembali),
+                            contentDescription = stringResource(R.string.kembali),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -72,24 +73,25 @@ fun NoteScreen(navController: NavHostController) {
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                Toast.makeText(context, R.string.belum_bisa, Toast.LENGTH_SHORT).show()
+                navController.navigate(Screen.FormBaru.route)
             }) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(R.string.belum_bisa),
+                    contentDescription = stringResource(R.string.tambah_catatan),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
         }
-    ) { innerPadding ->
-        NoteContent(Modifier.padding(innerPadding))
+    ) { padding ->
+        NoteContent(Modifier.padding(padding),navController)
     }
 }
 
 
+
 @SuppressLint("StringFormatInvalid")
 @Composable
-fun NoteContent(modifier: Modifier) {
+fun NoteContent(modifier: Modifier,navController: NavHostController  ) {
     val viewModel:MainViewModel = viewModel()
     val  data = viewModel.data
 
@@ -111,8 +113,7 @@ fun NoteContent(modifier: Modifier) {
                 val context = LocalContext.current
 
                 ListItem(catatan = it) {
-                    val pesan =context.getString(R.string.x_diklik,it.judul)
-                    Toast.makeText(context,pesan,Toast.LENGTH_SHORT).show()
+                    navController.navigate(Screen.Formubah.withId(it.id))
                 }
                 HorizontalDivider()
             }
@@ -152,7 +153,7 @@ fun ListItem(catatan: Catatan, onClick: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun NotePreview() {
-    GoldyCalcTheme {
+        GoldyCalcTheme {
         NoteScreen(rememberNavController())
     }
 }
