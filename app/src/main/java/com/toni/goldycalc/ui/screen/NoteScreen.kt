@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -27,10 +28,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -48,6 +53,7 @@ import com.toni.goldycalc.util.ViewModelFactory
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteScreen(navController: NavHostController) {
+    var showList by remember { mutableStateOf(true) }
 
 
     Scaffold(
@@ -66,13 +72,29 @@ fun NoteScreen(navController: NavHostController) {
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.kembali),
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = stringResource(id = R.string.kembali),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { showList = !showList }) {
+                        Icon(
+                            painter = painterResource(
+                                if (showList) R.drawable.baseline_grid_view_24
+                                else R.drawable.baseline_view_list_24
+                            ),
+                            contentDescription = stringResource(
+                                if (showList) R.string.grid else R.string.list
+                            ),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
             )
+
+
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
@@ -91,6 +113,7 @@ fun NoteScreen(navController: NavHostController) {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 
 @SuppressLint("StringFormatInvalid")
 @Composable
@@ -100,6 +123,7 @@ fun NoteContent(modifier: Modifier, navController: NavHostController) {
     val viewModel: MainViewModel = viewModel(factory = factory)
 
     val data by viewModel.data.collectAsState()
+
 
     if (data.isEmpty()) {
         Column(

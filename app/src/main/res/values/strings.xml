@@ -16,4 +16,6 @@
     <string name="pesan_hapus">Hapus catatan</string>
     <string name="tombol_hapus">Hapus </string>
     <string name="tombol_batal">Batal</string>
+    <string name="list">Tampilkan List</string>
+    <string name="grid">Tampilkan Grid</string>
 </resources>
