@@ -1,7 +1,7 @@
 package com.toni.goldycalc.ui.screen
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,14 +19,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,73 +36,94 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.toni.goldycalc.R
-import com.toni.goldycalc.model.Catatan
+import com.toni.goldycalc.model.Tema
 import com.toni.goldycalc.navigation.Screen
 import com.toni.goldycalc.ui.theme.GoldyCalcTheme
-import com.toni.goldycalc.util.ViewModelFactory
-
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavHostController) {
+    var selectedTheme by remember { mutableStateOf(Tema.SYSTEM) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "GoldyCalc",
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                },
-
-                colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = Color(0xFFDAA520),
-                    titleContentColor = Color.White,
-                ),
-                actions = {
-                    IconButton(onClick = {navController.navigate(Screen.About.route)}) {
-                        Icon(
-                            imageVector = Icons.Outlined.KeyboardArrowRight,
-                            contentDescription = stringResource(R.string.penjelasan),
-                            tint = MaterialTheme.colorScheme.primary
+    AppThemeWrapper(selectedTheme = selectedTheme) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "GoldyCalc",
+                            style = MaterialTheme.typography.headlineSmall
                         )
+                    },
+                    colors = TopAppBarDefaults.mediumTopAppBarColors(
+                        containerColor = Color(0xFFDAA520),
+                        titleContentColor = Color.White,
+                    ),
+                    actions = {
+                        IconButton(onClick = { navController.navigate(Screen.About.route) }) {
+                            Icon(
+                                imageVector = Icons.Outlined.KeyboardArrowRight,
+                                contentDescription = stringResource(R.string.penjelasan),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        IconButton(onClick = { navController.navigate(Screen.Note.route) }) {
+                            Icon(
+                                imageVector = Icons.Outlined.AddCircle,
+                                contentDescription = stringResource(R.string.tambah_catatan),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+
+                        // 🔘 Tombol Ganti Tema
+                        IconButton(onClick = {
+                            // Ganti ke tema berikutnya
+                            val themes = Tema.values()
+                            val nextIndex = (themes.indexOf(selectedTheme) + 1) % themes.size
+                            selectedTheme = themes[nextIndex]
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = "Ganti Tema",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
-                    IconButton(onClick = { navController.navigate(Screen.Note.route) }) {
-                        Icon(
-                            imageVector = Icons.Outlined.AddCircle,
-                            contentDescription = stringResource(R.string.tambah_catatan),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                }
-
-
-
-            )
+                )
+            }
+        ) { innerPadding ->
+            ScreenContent(Modifier.padding(innerPadding))
         }
-    ) { innerPadding ->
-        ScreenContent(Modifier.padding(innerPadding))
     }
 }
+@Composable
+fun AppThemeWrapper(selectedTheme: Tema, content: @Composable () -> Unit) {
+    val colorScheme = when (selectedTheme) {
+        Tema.LIGHT -> lightColorScheme()
+        Tema.DARK -> darkColorScheme()
+        Tema.RED -> lightColorScheme(primary = Color.Red)
+        Tema.ORANGE -> lightColorScheme(primary = Color(0xFFFF9800))
+        Tema.YELLOW -> lightColorScheme(primary = Color(0xFFFFEB3B))
+        Tema.SYSTEM -> if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    }
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = typography,
+        content = content
+    )
+}
+
 
 
 

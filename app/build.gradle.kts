@@ -46,6 +46,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.datastore.preferences)
+
 
     // -- IMPLEMENTASI UTAMA
     implementation(libs.androidx.lifecycle.viewmodel.compose)

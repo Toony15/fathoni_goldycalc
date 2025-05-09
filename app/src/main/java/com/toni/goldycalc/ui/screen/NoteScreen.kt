@@ -56,12 +56,17 @@ import com.toni.goldycalc.R
 import com.toni.goldycalc.model.Catatan
 import com.toni.goldycalc.navigation.Screen
 import com.toni.goldycalc.ui.theme.GoldyCalcTheme
+import com.toni.goldycalc.util.SettingsDataStore
 import com.toni.goldycalc.util.ViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteScreen(navController: NavHostController) {
-    var showList by remember { mutableStateOf(true) }
+    val dataStore = SettingsDataStore(LocalContext.current)
+    val showlist by  dataStore.layoutFlow.collectAsState(true)
 
 
     Scaffold(
@@ -80,21 +85,24 @@ fun NoteScreen(navController: NavHostController) {
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = stringResource(id = R.string.kembali),
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.kembali),
                             tint = MaterialTheme.colorScheme.primary
                         )
+
                     }
                 },
                 actions = {
-                    IconButton(onClick = { showList = !showList }) {
+                    IconButton(onClick = { CoroutineScope(Dispatchers.IO).launch {
+                        dataStore.saveLayout(!showlist)
+                    } }) {
                         Icon(
                             painter = painterResource(
-                                if (showList) R.drawable.baseline_grid_view_24
+                                if (showlist) R.drawable.baseline_grid_view_24
                                 else R.drawable.baseline_view_list_24
                             ),
                             contentDescription = stringResource(
-                                if (showList) R.string.grid else R.string.list
+                                if (showlist) R.string.grid else R.string.list
                             ),
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -116,7 +124,7 @@ fun NoteScreen(navController: NavHostController) {
             }
         }
     ) { padding ->
-        NoteContent(showList,Modifier.padding(padding),navController)
+        NoteContent(showlist,Modifier.padding(padding),navController)
     }
 }
 

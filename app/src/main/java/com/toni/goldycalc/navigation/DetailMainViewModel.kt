@@ -42,5 +42,10 @@ class DetailViewModel(private  val dao: CatatanDao) : ViewModel() {
             dao.deleteById(id)
         }
     }
+    fun softDelete(id: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dao.softDeleteById(id)
+        }
+    }
 
 }
